@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+build/
+lib/
+.vscode/
+ros_wrapper/build/
+
