@@ -7,22 +7,25 @@
 
 #include "floam_ros_free/system.h"
 
+#include <iostream>
 #include <memory>
 
 namespace floam_ros {
 
 class FloamNode : public rclcpp::Node {
  public:
-  FloamNode(std::string node_name) : rclcpp::Node(node_name) {
+  FloamNode(std::string node_name, const std::string& config_file_path) : rclcpp::Node(node_name) {
     RCLCPP_INFO(get_logger(), "Initializing Floam Node...");
     
     map_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>("map", 10);
     odom_pub_ = create_publisher<nav_msgs::msg::Odometry>("odom", 10);
     pointcloud_sub_ = create_subscription<sensor_msgs::msg::PointCloud2>(
-      "topic", 10, std::bind(&FloamNode::pointCloudReceiveCallback, this, std::placeholders::_1));
+      "velodyne_points", 10, std::bind(&FloamNode::pointCloudReceiveCallback, this, std::placeholders::_1));
 
-    system_ = new floam::System(std::bind(&FloamNode::publishMap, this, std::placeholders::_1), 
-                                std::bind(&FloamNode::publishOdom, this, std::placeholders::_1, std::placeholders::_2));
+    // system_ = new floam::System(config_file_path, 
+    //                             std::bind(&FloamNode::publishMap, this, std::placeholders::_1), 
+    //                             std::bind(&FloamNode::publishOdom, this, std::placeholders::_1, std::placeholders::_2));
+    system_ = new floam::System(config_file_path);
   }
 
   ~FloamNode() { 
@@ -70,8 +73,14 @@ class FloamNode : public rclcpp::Node {
 } // namespace floam_ros
 
 int main(int argc, char** argv) {
+  if (argc != 2) {
+    std::cerr << "Usage shall be: floam_ros {config_file_path}" << std::endl;
+    return 1;
+  }
+
   rclcpp::init(argc, argv);
-  auto node = std::make_shared<floam_ros::FloamNode>("floam_node");
+  std::string config_path_path(argv[1]);
+  auto node = std::make_shared<floam_ros::FloamNode>("floam_node", config_path_path);
   rclcpp::spin(node->get_node_base_interface());
 
   rclcpp::shutdown();

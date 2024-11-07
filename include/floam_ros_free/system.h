@@ -4,13 +4,16 @@
 #include "floam_ros_free/laser_mapper.h"
 #include "floam_ros_free/odom_estimator.h"
 #include "floam_ros_free/laser_processor.h"
+#include "floam_ros_free/config_parser.h"
+
+#include <string>
 
 namespace floam {
 
 class System {
  public:
-  System();
-  System(const LaserMapper::UpdateMapCallback& update_map_cb, const OdomEstimator::UpdateOdomCallback& update_odom_cb);
+  System(const std::string& config_file_path);
+  System(const std::string& config_file_path, const LaserMapper::UpdateMapCallback& update_map_cb, const OdomEstimator::UpdateOdomCallback& update_odom_cb);
   ~System();
 
   System(const System&) = delete;
@@ -24,6 +27,7 @@ class System {
   LaserProcessor* laser_processor_;
   LaserMapper* laser_mapper_;
   OdomEstimator* odom_estimator_;
+  ConfigParser config_parser_;
   
   std::thread* laser_mapping_thd_;
   std::thread* odom_estimation_thd_;

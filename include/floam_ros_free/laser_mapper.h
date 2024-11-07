@@ -73,8 +73,6 @@ class LaserMapper {
       map;
   pcl::VoxelGrid<pcl::PointXYZI> downSizeFilter;
 
-  lidar::Lidar lidar_param;
-
   std::queue<pcl::PointCloud<pcl::PointXYZI>::Ptr> pointcloud_queue_;
   std::queue<Eigen::Isometry3d> pose_queue_;
 

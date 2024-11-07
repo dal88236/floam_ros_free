@@ -4,6 +4,7 @@
 #include <g2o/core/optimization_algorithm_gauss_newton.h>
 
 #include <chrono>
+#include <iostream>
 
 namespace floam {
 
@@ -41,7 +42,7 @@ void OdomEstimator::stop() {
   stop_ = true;
 }
 
-void OdomEstimator::init(lidar::Lidar lidar_param, double map_resolution) {
+void OdomEstimator::init(double map_resolution) {
   // init local map
   laserCloudCornerMap = pcl::PointCloud<pcl::PointXYZI>::Ptr(
       new pcl::PointCloud<pcl::PointXYZI>());
@@ -108,26 +109,25 @@ void OdomEstimator::updatePointsToMap(
     kdtreeEdgeMap->setInputCloud(laserCloudCornerMap);
     kdtreeSurfMap->setInputCloud(laserCloudSurfMap);
 
+    std::unique_ptr<LinearSolverType> linearSolver = std::make_unique<LinearSolverType>();
+    std::unique_ptr<BlockSolverType> blockSolver = std::make_unique<BlockSolverType>(std::move(linearSolver));
+    g2o::OptimizationAlgorithmGaussNewton* solver = new g2o::OptimizationAlgorithmGaussNewton(std::move(blockSolver));
+    g2o::SparseOptimizer opt;
+    opt.setAlgorithm(solver);
+    opt.setVerbose(false);
+
+    g2o::VertexSE3Expmap* v = new g2o::VertexSE3Expmap();
+    v->setEstimate(g2o::SE3Quat(q_w_curr, t_w_curr));
+    v->setId(0);
+    opt.addVertex(v);
+
+    //  add edge here
+    addEdgeCostFactor(downsampledEdgeCloud, laserCloudCornerMap, opt, v);
+    addSurfCostFactor(downsampledSurfCloud, laserCloudSurfMap, opt, v);
+
     for (int iterCount = 0; iterCount < optimization_count; iterCount++) {
-      
-      std::unique_ptr<LinearSolverType> linearSolver = std::make_unique<LinearSolverType>();
-      std::unique_ptr<BlockSolverType> blockSolver = std::make_unique<BlockSolverType>(std::move(linearSolver));
-      g2o::OptimizationAlgorithmGaussNewton* solver = new g2o::OptimizationAlgorithmGaussNewton(std::move(blockSolver));
-      g2o::SparseOptimizer opt;
-      opt.setAlgorithm(solver);
-      opt.setVerbose(false);
-
-      g2o::VertexSE3Expmap* v = new g2o::VertexSE3Expmap();
-      v->setEstimate(g2o::SE3Quat(q_w_curr, t_w_curr));
-      v->setId(0);
-      opt.addVertex(v);
-
-      //  add edge here
-      addEdgeCostFactor(downsampledEdgeCloud, laserCloudCornerMap, opt, v);
-      addSurfCostFactor(downsampledSurfCloud, laserCloudSurfMap, opt, v);
-
       opt.initializeOptimization();
-      opt.optimize(10);
+      opt.optimize(4);
       g2o::SE3Quat SE3 = v->estimate();
 
       q_w_curr = SE3.rotation();
@@ -139,6 +139,8 @@ void OdomEstimator::updatePointsToMap(
   odom = Eigen::Isometry3d::Identity();
   odom.linear() = q_w_curr.toRotationMatrix();
   odom.translation() = t_w_curr;
+
+  std::cout << "Odom: " << t_w_curr << std::endl;
 
   addPointsToMap(downsampledEdgeCloud, downsampledSurfCloud);
 
@@ -229,7 +231,7 @@ void OdomEstimator::addEdgeCostFactor(
     }
   }
   if (corner_num < 20) {
-    printf("not enough correct points");
+    printf("not enough correct points\n");
   }
 }
 
@@ -286,7 +288,7 @@ void OdomEstimator::addSurfCostFactor(
     }
   }
   if (surf_num < 20) {
-    printf("not enough correct points");
+    printf("not enough correct points\n");
   }
 }
 

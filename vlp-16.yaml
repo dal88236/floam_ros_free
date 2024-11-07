@@ -1,0 +1,8 @@
+%YAML:1.0
+
+scan_period: 0.1
+vertical_angle: 2.0
+max_dis: 200.0
+min_dis: 0.3
+scan_line: 16
+map_resolution: 0.4

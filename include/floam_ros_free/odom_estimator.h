@@ -34,7 +34,6 @@
 // LOCAL LIB
 #include <ros/ros.h>
 
-#include "floam_ros_free/lidar.h"
 #include "floam_ros_free/g2o_type.h"
 
 namespace floam {
@@ -51,7 +50,7 @@ class OdomEstimator {
 
   void run();
   void stop();
-  void init(lidar::Lidar lidar_param, double map_resolution);
+  void init(double map_resolution);
   void addFeaturePoints(const pcl::PointCloud<pcl::PointXYZI>::Ptr& edge_in,
                         const pcl::PointCloud<pcl::PointXYZI>::Ptr& surf_in);
   void initMapWithPoints(const pcl::PointCloud<pcl::PointXYZI>::Ptr& edge_in,

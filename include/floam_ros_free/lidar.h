@@ -13,7 +13,7 @@ class Lidar {
   Lidar();
 
   void setScanPeriod(double scan_period_in);
-  void setLines(double num_lines_in);
+  void setLines(int num_lines_in);
   void setVerticalAngle(double vertical_angle_in);
   void setVerticalResolution(double vertical_angle_resolution_in);
   // by default is 100. pls do not change

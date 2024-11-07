@@ -8,9 +8,7 @@ ENDIF()
 MESSAGE("Build type: " ${CMAKE_BUILD_TYPE})
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall   -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -march=native")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3")
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++14" COMPILER_SUPPORTS_CXX14)
@@ -30,9 +28,10 @@ endif()
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
 find_package(PCL REQUIRED)
-find_package(Eigen3 3.1.0 REQUIRED)
+find_package(Eigen3 REQUIRED)
 find_package(G2O REQUIRED) 
 find_package(Sophus REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 set(library_name floam_core)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
@@ -64,11 +63,12 @@ include_directories(
   ${EIGEN3_INCLUDE_DIR}
   ${G2O_INCLUDE_DIRS}
   ${Sophus_INCLUDE_DIRS}
-  ${Pangolin_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
+  ${YAML_CPP_INCLUDE_DIRS}
 )
 
 add_library(${library_name} SHARED
+  src/config_parser.cpp
   src/g2o_type.cpp
   src/laser_mapper.cpp
   src/laser_processor.cpp
@@ -82,4 +82,5 @@ target_link_libraries(${library_name}
   ${G2O_LIBS} 
   ${Sophus_LIBRARIES}
   ${PCL_LIBRARY_DIRS}
+  ${YAML_CPP_LIBRARIES}
 )

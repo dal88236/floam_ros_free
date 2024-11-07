@@ -6,7 +6,7 @@
 
 lidar::Lidar::Lidar() {}
 
-void lidar::Lidar::setLines(double num_lines_in) { num_lines = num_lines_in; }
+void lidar::Lidar::setLines(int num_lines_in) { num_lines = num_lines_in; }
 
 void lidar::Lidar::setVerticalAngle(double vertical_angle_in) {
   vertical_angle = vertical_angle_in;
