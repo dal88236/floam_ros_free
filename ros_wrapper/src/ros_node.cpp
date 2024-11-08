@@ -22,10 +22,9 @@ class FloamNode : public rclcpp::Node {
     pointcloud_sub_ = create_subscription<sensor_msgs::msg::PointCloud2>(
       "velodyne_points", 10, std::bind(&FloamNode::pointCloudReceiveCallback, this, std::placeholders::_1));
 
-    // system_ = new floam::System(config_file_path, 
-    //                             std::bind(&FloamNode::publishMap, this, std::placeholders::_1), 
-    //                             std::bind(&FloamNode::publishOdom, this, std::placeholders::_1, std::placeholders::_2));
-    system_ = new floam::System(config_file_path);
+    system_ = new floam::System(config_file_path, 
+                                std::bind(&FloamNode::publishMap, this, std::placeholders::_1), 
+                                std::bind(&FloamNode::publishOdom, this, std::placeholders::_1, std::placeholders::_2));
   }
 
   ~FloamNode() { 
@@ -36,9 +35,9 @@ class FloamNode : public rclcpp::Node {
  private:
   void publishMap(pcl::PointCloud<pcl::PointXYZI>& pc_in) {
     sensor_msgs::msg::PointCloud2 pc_msg;
+    pcl::toROSMsg(pc_in, pc_msg);
     pc_msg.header.stamp = get_clock()->now();
     pc_msg.header.frame_id = "map";
-    pcl::toROSMsg(pc_in, pc_msg);
 
     map_pub_->publish(pc_msg);
   }
@@ -58,7 +57,7 @@ class FloamNode : public rclcpp::Node {
     odom_pub_->publish(odom_msg);
   }
   void pointCloudReceiveCallback(sensor_msgs::msg::PointCloud2::SharedPtr pointcloud_msg) {
-    pcl::PointCloud<pcl::PointXYZI>::Ptr cloud = boost::make_shared<pcl::PointCloud<pcl::PointXYZI>>();
+    pcl::PointCloud<pcl::PointXYZI>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZI>());
 
     pcl::fromROSMsg(*pointcloud_msg, *cloud);
     system_->track(cloud);

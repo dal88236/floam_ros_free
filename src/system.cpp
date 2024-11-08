@@ -10,6 +10,7 @@ System::System(const std::string& config_file_path) {
   lidar::Lidar lidar_param;
   double map_resolution;
   config_parser_.parseConfig(config_file_path, lidar_param, map_resolution);
+  laser_mapper_->init(map_resolution);
   laser_processor_->init(lidar_param);
   odom_estimator_->init(map_resolution);
 
@@ -25,6 +26,7 @@ System::System(const std::string& config_file_path, const LaserMapper::UpdateMap
   lidar::Lidar lidar_param;
   double map_resolution;
   config_parser_.parseConfig(config_file_path, lidar_param, map_resolution);
+  laser_mapper_->init(map_resolution);
   laser_processor_->init(lidar_param);
   odom_estimator_->init(map_resolution);
 

@@ -61,9 +61,9 @@ class OdomEstimator {
   bool isInit() { return init_; }
   void setUpdateOdomCallback(UpdateOdomCallback update_odom_cb) { update_odom_cb_ = update_odom_cb; }
 
-  Eigen::Isometry3d odom;
-  pcl::PointCloud<pcl::PointXYZI>::Ptr laserCloudCornerMap;
-  pcl::PointCloud<pcl::PointXYZI>::Ptr laserCloudSurfMap;
+  Eigen::Isometry3d odom_;
+  pcl::PointCloud<pcl::PointXYZI>::Ptr laser_cloud_corner_map_;
+  pcl::PointCloud<pcl::PointXYZI>::Ptr laser_cloud_surf_map_;
 
  private:
   // function
@@ -74,8 +74,8 @@ class OdomEstimator {
                          const pcl::PointCloud<pcl::PointXYZI>::Ptr& map_in,
                          g2o::SparseOptimizer&, g2o::VertexSE3Expmap*);
   void addPointsToMap(
-      const pcl::PointCloud<pcl::PointXYZI>::Ptr& downsampledEdgeCloud,
-      const pcl::PointCloud<pcl::PointXYZI>::Ptr& downsampledSurfCloud);
+      const pcl::PointCloud<pcl::PointXYZI>::Ptr& downsample_edge_cloud,
+      const pcl::PointCloud<pcl::PointXYZI>::Ptr& downsample_surf_cloud);
   void pointAssociateToMap(pcl::PointXYZI const *const pi,
                            pcl::PointXYZI *const po);
   void downSamplingToMap(const pcl::PointCloud<pcl::PointXYZI>::Ptr& edge_pc_in,
@@ -85,26 +85,26 @@ class OdomEstimator {
 
   // optimization variable
   double parameters[7] = {0, 0, 0, 1, 0, 0, 0};
-  Eigen::Map<Eigen::Quaterniond> q_w_curr =
+  Eigen::Map<Eigen::Quaterniond> q_w_curr_ =
       Eigen::Map<Eigen::Quaterniond>(parameters);
-  Eigen::Map<Eigen::Vector3d> t_w_curr =
+  Eigen::Map<Eigen::Vector3d> t_w_curr_ =
       Eigen::Map<Eigen::Vector3d>(parameters + 4);
 
-  Eigen::Isometry3d last_odom;
+  Eigen::Isometry3d last_odom_;
 
   // kd-tree
-  pcl::KdTreeFLANN<pcl::PointXYZI>::Ptr kdtreeEdgeMap;
-  pcl::KdTreeFLANN<pcl::PointXYZI>::Ptr kdtreeSurfMap;
+  pcl::KdTreeFLANN<pcl::PointXYZI>::Ptr kdtree_edge_map_;
+  pcl::KdTreeFLANN<pcl::PointXYZI>::Ptr kdtree_surf_map_;
 
   // points downsampling before add to map
-  pcl::VoxelGrid<pcl::PointXYZI> downSizeFilterEdge;
-  pcl::VoxelGrid<pcl::PointXYZI> downSizeFilterSurf;
+  pcl::VoxelGrid<pcl::PointXYZI> downsize_filter_edge_;
+  pcl::VoxelGrid<pcl::PointXYZI> downsize_filter_surf_;
 
   // local map
-  pcl::CropBox<pcl::PointXYZI> cropBoxFilter;
+  pcl::CropBox<pcl::PointXYZI> crop_box_filter_;
 
   // optimization count
-  int optimization_count;
+  int optimization_count_;
 
   bool init_{false};
   bool stop_{false};

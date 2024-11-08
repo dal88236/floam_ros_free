@@ -43,7 +43,7 @@ class LaserProcessor {
       pcl::PointCloud<pcl::PointXYZI>::Ptr& pc_out_surf);
 
  private:
-  lidar::Lidar lidar_param;
+  lidar::Lidar lidar_param_;
   OdomEstimator* odom_estimator_;
   bool stop_{false};
 };  // class LaserProcessor

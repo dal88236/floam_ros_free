@@ -63,15 +63,15 @@ class LaserMapper {
   void addDepthCellPositive(void);
   void checkPoints(int& x, int& y, int& z);
 
-  int origin_in_map_x;
-  int origin_in_map_y;
-  int origin_in_map_z;
-  int map_width;
-  int map_height;
-  int map_depth;
+  int origin_in_map_x_;
+  int origin_in_map_y_;
+  int origin_in_map_z_;
+  int map_width_;
+  int map_height_;
+  int map_depth_;
   std::vector<std::vector<std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr>>>
-      map;
-  pcl::VoxelGrid<pcl::PointXYZI> downSizeFilter;
+      map_;
+  pcl::VoxelGrid<pcl::PointXYZI> downsize_filter_;
 
   std::queue<pcl::PointCloud<pcl::PointXYZI>::Ptr> pointcloud_queue_;
   std::queue<Eigen::Isometry3d> pose_queue_;

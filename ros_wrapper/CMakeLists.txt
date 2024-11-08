@@ -10,6 +10,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3")
 
 # find dependencies
 find_package(PCL REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(pcl_msgs REQUIRED)
 find_package(ament_cmake REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -44,6 +46,9 @@ set(dependencies
   nav_msgs
   tf2
   tf2_ros
+  pcl_conversions
+  pcl_msgs
+  PCL
 )
 
 add_executable(floam_ros src/ros_node.cpp)
