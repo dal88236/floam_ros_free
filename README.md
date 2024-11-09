@@ -76,7 +76,7 @@ build/vlp_exec vlp-16.yaml
 ```
 or using ros wrapper
 ```
-    . ros_wrapper/build/floam_ros vlp-16.yaml
+ros_wrapper/build/floam_ros vlp-16.yaml
 ```
 If you are using HDL-32 or other sensor, please change the scan_line in the launch file 
 
