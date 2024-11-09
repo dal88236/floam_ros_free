@@ -6,3 +6,5 @@ max_dis: 200.0
 min_dis: 0.3
 scan_line: 16
 map_resolution: 0.4
+ip_address: '192.168.1.201'
+port: 2368

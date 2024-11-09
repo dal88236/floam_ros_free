@@ -78,8 +78,8 @@ int main(int argc, char** argv) {
   }
 
   rclcpp::init(argc, argv);
-  std::string config_path_path(argv[1]);
-  auto node = std::make_shared<floam_ros::FloamNode>("floam_node", config_path_path);
+  std::string config_path(argv[1]);
+  auto node = std::make_shared<floam_ros::FloamNode>("floam_node", config_path);
   rclcpp::spin(node->get_node_base_interface());
 
   rclcpp::shutdown();

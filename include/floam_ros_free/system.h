@@ -22,6 +22,7 @@ class System {
   void operator=(const System&) = delete;
 
   void track(const pcl::PointCloud<pcl::PointXYZI>::Ptr& pc_in);
+  void track(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr& pc_in);
 
  private:
   LaserProcessor* laser_processor_;

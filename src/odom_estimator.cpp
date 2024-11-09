@@ -188,20 +188,20 @@ void OdomEstimator::addEdgeCostFactor(
     kdtree_edge_map_->nearestKSearch(point_temp, 5, point_search_ind,
                                   point_search_sq_dis);
     if (point_search_sq_dis[4] < 1.0) {
-      std::vector<Eigen::Vector3d> nearCorners;
+      std::vector<Eigen::Vector3d> near_corners;
       Eigen::Vector3d center(0, 0, 0);
       for (int j = 0; j < 5; j++) {
         Eigen::Vector3d tmp(map_in->points[point_search_ind[j]].x,
                             map_in->points[point_search_ind[j]].y,
                             map_in->points[point_search_ind[j]].z);
         center = center + tmp;
-        nearCorners.push_back(tmp);
+        near_corners.push_back(tmp);
       }
       center = center / 5.0;
 
       Eigen::Matrix3d cov_mat = Eigen::Matrix3d::Zero();
       for (int j = 0; j < 5; j++) {
-        Eigen::Matrix<double, 3, 1> tmp_zero_mean = nearCorners[j] - center;
+        Eigen::Matrix<double, 3, 1> tmp_zero_mean = near_corners[j] - center;
         cov_mat = cov_mat + tmp_zero_mean * tmp_zero_mean.transpose();
       }
 

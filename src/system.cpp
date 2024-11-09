@@ -55,4 +55,9 @@ void System::track(const pcl::PointCloud<pcl::PointXYZI>::Ptr& pc_in) {
   laser_processor_->featureExtraction(pc_in);
 }
 
+void System::track(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr& pc_in) {
+  pcl::PointCloud<pcl::PointXYZI>::Ptr pc_in_ptr(new pcl::PointCloud<pcl::PointXYZI>(*pc_in));
+  laser_processor_->featureExtraction(pc_in_ptr);
+}
+
 } // namespace floam
