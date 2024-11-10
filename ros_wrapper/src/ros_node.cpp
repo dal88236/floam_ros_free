@@ -1,6 +1,9 @@
 #include <rclcpp/rclcpp.hpp>
+#include <geometry_msgs/msg/transform_stamped.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <nav_msgs/msg/odometry.hpp>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_ros/transform_broadcaster.h>
 
 #include <pcl/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
@@ -21,6 +24,7 @@ class FloamNode : public rclcpp::Node {
     odom_pub_ = create_publisher<nav_msgs::msg::Odometry>("odom", 10);
     pointcloud_sub_ = create_subscription<sensor_msgs::msg::PointCloud2>(
       "velodyne_points", 10, std::bind(&FloamNode::pointCloudReceiveCallback, this, std::placeholders::_1));
+    tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
 
     system_ = new floam::System(config_file_path, 
                                 std::bind(&FloamNode::publishMap, this, std::placeholders::_1), 
@@ -42,8 +46,22 @@ class FloamNode : public rclcpp::Node {
     map_pub_->publish(pc_msg);
   }
   void publishOdom(const Eigen::Quaterniond& q_wb, const Eigen::Vector3d& t_wb) {
+    rclcpp::Time now = get_clock()->now();
+    geometry_msgs::msg::TransformStamped transform_stamped;
+    transform_stamped.header.stamp = now;
+    transform_stamped.header.frame_id = "map";
+    transform_stamped.child_frame_id = "base_link";
+    transform_stamped.transform.translation.x = t_wb.x();
+    transform_stamped.transform.translation.y = t_wb.y();
+    transform_stamped.transform.translation.z = t_wb.z();
+    transform_stamped.transform.rotation.x = q_wb.x();
+    transform_stamped.transform.rotation.y = q_wb.y();
+    transform_stamped.transform.rotation.z = q_wb.z();
+    transform_stamped.transform.rotation.w = q_wb.w();
+    tf_broadcaster_->sendTransform(transform_stamped);
+
     nav_msgs::msg::Odometry odom_msg;
-    odom_msg.header.stamp = get_clock()->now();
+    odom_msg.header.stamp = now;
     odom_msg.header.frame_id = "map";
     odom_msg.child_frame_id = "base_link";
     odom_msg.pose.pose.orientation.x = q_wb.x();
@@ -66,6 +84,7 @@ class FloamNode : public rclcpp::Node {
   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr map_pub_;
   rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr pointcloud_sub_;
+  std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_; 
   floam::System* system_;
 }; // class FloamNode
 

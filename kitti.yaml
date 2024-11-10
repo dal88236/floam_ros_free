@@ -5,4 +5,4 @@ vertical_angle: 2.0
 max_dis: 60.0
 min_dis: 2.0
 scan_line: 64
-map_resolution: 0.4
+map_resolution: 0.1
