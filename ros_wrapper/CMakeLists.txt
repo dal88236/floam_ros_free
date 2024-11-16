@@ -21,11 +21,13 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(Pangolin REQUIRED)
 
 include_directories(
   ${PROJECT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}/../include
   ${PCL_INCLUDE_DIRS}
+  ${Pangolin_INCLUDE_DIRS}
   "usr/include/eigen3"
 )
 
@@ -35,6 +37,7 @@ link_directories( ${PCL_LIBRARY_DIRS} )
 set(LIBS 
   ${PCL_LIBRARIES}
   ${Sophus_LIBRARIES}
+  ${Pangolin_LIBRARIES}
   ${PROJECT_SOURCE_DIR}/../lib/libfloam_core.so
   -lboost_system
 )

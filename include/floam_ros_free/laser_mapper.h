@@ -81,6 +81,7 @@ class LaserMapper {
   UpdateMapCallback update_map_cb_;
 
   std::mutex mtx_;
+  std::mutex mapper_mtx_;
 };
 
 }  // namespace floam

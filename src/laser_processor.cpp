@@ -66,7 +66,7 @@ void LaserProcessor::featureExtraction(
     std::vector<Double2d> cloud_curvature;
     int total_points = laser_cloud_scans[i]->points.size() - 10;
     for (int j = 5; j < static_cast<int>(laser_cloud_scans[i]->points.size()) - 5; j++) {
-      double diffX = laser_cloud_scans[i]->points[j - 5].x +
+      double diff_x = laser_cloud_scans[i]->points[j - 5].x +
                      laser_cloud_scans[i]->points[j - 4].x +
                      laser_cloud_scans[i]->points[j - 3].x +
                      laser_cloud_scans[i]->points[j - 2].x +
@@ -77,7 +77,7 @@ void LaserProcessor::featureExtraction(
                      laser_cloud_scans[i]->points[j + 3].x +
                      laser_cloud_scans[i]->points[j + 4].x +
                      laser_cloud_scans[i]->points[j + 5].x;
-      double diffY = laser_cloud_scans[i]->points[j - 5].y +
+      double diff_y = laser_cloud_scans[i]->points[j - 5].y +
                      laser_cloud_scans[i]->points[j - 4].y +
                      laser_cloud_scans[i]->points[j - 3].y +
                      laser_cloud_scans[i]->points[j - 2].y +
@@ -88,7 +88,7 @@ void LaserProcessor::featureExtraction(
                      laser_cloud_scans[i]->points[j + 3].y +
                      laser_cloud_scans[i]->points[j + 4].y +
                      laser_cloud_scans[i]->points[j + 5].y;
-      double diffZ = laser_cloud_scans[i]->points[j - 5].z +
+      double diff_z = laser_cloud_scans[i]->points[j - 5].z +
                      laser_cloud_scans[i]->points[j - 4].z +
                      laser_cloud_scans[i]->points[j - 3].z +
                      laser_cloud_scans[i]->points[j - 2].z +
@@ -99,7 +99,7 @@ void LaserProcessor::featureExtraction(
                      laser_cloud_scans[i]->points[j + 3].z +
                      laser_cloud_scans[i]->points[j + 4].z +
                      laser_cloud_scans[i]->points[j + 5].z;
-      Double2d distance(j, diffX * diffX + diffY * diffY + diffZ * diffZ);
+      Double2d distance(j, diff_x * diff_x + diff_y * diff_y + diff_z * diff_z);
       cloud_curvature.push_back(distance);
     }
     for (int j = 0; j < 6; j++) {
@@ -154,19 +154,19 @@ void LaserProcessor::featureExtractionFromSector(
       }
 
       for (int k = 1; k <= 5; k++) {
-        double diffX = pc_in->points[ind + k].x - pc_in->points[ind + k - 1].x;
-        double diffY = pc_in->points[ind + k].y - pc_in->points[ind + k - 1].y;
-        double diffZ = pc_in->points[ind + k].z - pc_in->points[ind + k - 1].z;
-        if (diffX * diffX + diffY * diffY + diffZ * diffZ > 0.05) {
+        double diff_x = pc_in->points[ind + k].x - pc_in->points[ind + k - 1].x;
+        double diff_y = pc_in->points[ind + k].y - pc_in->points[ind + k - 1].y;
+        double diff_z = pc_in->points[ind + k].z - pc_in->points[ind + k - 1].z;
+        if (diff_x * diff_x + diff_y * diff_y + diff_z * diff_z > 0.05) {
           break;
         }
         picked_points.push_back(ind + k);
       }
       for (int k = -1; k >= -5; k--) {
-        double diffX = pc_in->points[ind + k].x - pc_in->points[ind + k + 1].x;
-        double diffY = pc_in->points[ind + k].y - pc_in->points[ind + k + 1].y;
-        double diffZ = pc_in->points[ind + k].z - pc_in->points[ind + k + 1].z;
-        if (diffX * diffX + diffY * diffY + diffZ * diffZ > 0.05) {
+        double diff_x = pc_in->points[ind + k].x - pc_in->points[ind + k + 1].x;
+        double diff_y = pc_in->points[ind + k].y - pc_in->points[ind + k + 1].y;
+        double diff_z = pc_in->points[ind + k].z - pc_in->points[ind + k + 1].z;
+        if (diff_x * diff_x + diff_y * diff_y + diff_z * diff_z > 0.05) {
           break;
         }
         picked_points.push_back(ind + k);

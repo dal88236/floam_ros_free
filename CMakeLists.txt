@@ -32,6 +32,7 @@ find_package(Eigen3 REQUIRED)
 find_package(G2O REQUIRED) 
 find_package(Sophus REQUIRED)
 find_package(yaml-cpp REQUIRED)
+find_package(Pangolin REQUIRED)
 
 set(library_name floam_core)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
@@ -65,6 +66,7 @@ include_directories(
   ${Sophus_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
   ${YAML_CPP_INCLUDE_DIRS}
+  ${Pangolin_INCLUDE_DIRS}
 )
 
 add_library(${library_name} SHARED
@@ -75,6 +77,7 @@ add_library(${library_name} SHARED
   src/lidar.cpp
   src/odom_estimator.cpp
   src/system.cpp
+  src/viewer.cpp
 )
 
 target_link_libraries(${library_name}
@@ -83,6 +86,7 @@ target_link_libraries(${library_name}
   ${Sophus_LIBRARIES}
   ${PCL_LIBRARY_DIRS}
   ${YAML_CPP_LIBRARIES}
+  ${Pangolin_LIBRARIES}
 )
 
 add_executable(vlp_exec 

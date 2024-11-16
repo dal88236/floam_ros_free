@@ -5,6 +5,7 @@
 #include "floam_ros_free/odom_estimator.h"
 #include "floam_ros_free/laser_processor.h"
 #include "floam_ros_free/config_parser.h"
+#include "floam_ros_free/viewer.h"
 
 #include <string>
 
@@ -23,15 +24,18 @@ class System {
 
   void track(const pcl::PointCloud<pcl::PointXYZI>::Ptr& pc_in);
   void track(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr& pc_in);
+  void saveMap();
 
  private:
   LaserProcessor* laser_processor_;
   LaserMapper* laser_mapper_;
   OdomEstimator* odom_estimator_;
+  Viewer* viewer_;
   ConfigParser config_parser_;
   
   std::thread* laser_mapping_thd_;
   std::thread* odom_estimation_thd_;
+  std::thread* viewer_render_thd_;
 };
 
 } // namespace floam

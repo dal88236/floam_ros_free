@@ -151,6 +151,8 @@ void LaserMapper::addDepthCellPositive(void) {
 
 // extend map is points exceed size
 void LaserMapper::checkPoints(int& x, int& y, int& z) {
+  std::lock_guard<std::mutex> lk(mapper_mtx_);
+  
   while (x + LASER_CELL_RANGE_HORIZONTAL > map_width_ - 1) {
     addWidthCellPositive();
   }
@@ -213,6 +215,8 @@ void LaserMapper::updateCurrentPointsToMap(
       new pcl::PointCloud<pcl::PointXYZI>());
   transformPointCloud(*pc_in, *transformed_pc, pose_current.cast<float>());
 
+  std::lock_guard<std::mutex> lk(mapper_mtx_);
+
   // save points
   for (int i = 0; i < static_cast<int>(transformed_pc->points.size()); i++) {
     pcl::PointXYZI point_temp = transformed_pc->points[i];
@@ -265,6 +269,9 @@ pcl::PointCloud<pcl::PointXYZI>::Ptr LaserMapper::getMap(void) {
   pcl::PointCloud<pcl::PointXYZI>::Ptr laserCloudMap =
       pcl::PointCloud<pcl::PointXYZI>::Ptr(
           new pcl::PointCloud<pcl::PointXYZI>());
+  
+  std::lock_guard<std::mutex> lk(mapper_mtx_);
+
   for (int i = 0; i < map_width_; i++) {
     for (int j = 0; j < map_height_; j++) {
       for (int k = 0; k < map_depth_; k++) {
